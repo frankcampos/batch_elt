@@ -1,0 +1,5 @@
+source:
+  file_name: removals-latest.xlsx
+  url: https://github.com/deportationdata/ice/raw/main/data/removals-latest.xlsx
+destination:
+  file_path: data/raw/
