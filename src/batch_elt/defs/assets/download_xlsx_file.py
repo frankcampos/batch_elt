@@ -6,7 +6,8 @@ def download_xlsx_file(spec):
     source_name = spec['source']['file_name']
     file_path = spec['destination']['file_path']
     name= source_name.split('.')[0]
-    @asset(name=f"download_{name}")
+    @asset(name=f"download_{name}",
+           group_name="bronze")
     def _asset():
         """Extracts 2012 to 2023 ICE removal data from the Deportation Data Project."""
         # The 'raw' part of the URL is the secret to getting the actual file
