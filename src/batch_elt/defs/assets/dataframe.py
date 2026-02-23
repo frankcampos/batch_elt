@@ -12,6 +12,7 @@ def create_dataframe_asset(spec):
 
     @asset(
         name=dataframe_asset_name,
+        group_name="bronze",
         ins={"input_xlsx_path": AssetIn(key=download_asset_name)}
     )
     def _dataframe_asset(input_xlsx_path: str):
