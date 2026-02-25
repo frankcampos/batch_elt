@@ -1,8 +1,10 @@
-from pathlib import Path
+from dagster import Definitions
+from dagster_duckdb import DuckDBResource
+from batch_elt.defs.assets.get_batch_elt_lookup_assets import batch_elt_assets
 
-from dagster import definitions, load_from_defs_folder
-
-
-@definitions
-def defs():
-    return load_from_defs_folder(path_within_project=Path(__file__).parent)
+defs = Definitions(
+    assets=batch_elt_assets,
+    resources={
+        "database": DuckDBResource(database="duckdb/data.duckdb"),
+    },
+)
