@@ -14,6 +14,7 @@ def create_parquet_file_asset(spec):
     @asset(
         name=parquet_asset_name,
         group_name="bronze",
+        key_prefix=["parquet_files"],
         ins={"input_dataframes": AssetIn(key=dataframe_asset_name)},
     )
     def _parquet_file_asset(
