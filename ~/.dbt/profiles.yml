@@ -1,0 +1,13 @@
+# In dbt, a profile is a set of connection details for your data warehouse.
+# This profile is named 'batch_elt_dbt' to match the 'profile' setting
+# in your dbt_project.yml file.
+
+batch_elt_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../../duckdb/data.duckdb
+      
+      # You can add threads if you want to run models in parallel
+      # threads: 4
