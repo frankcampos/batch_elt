@@ -32,39 +32,40 @@ OVERWRITE_OR_IGNORE 1
 );
 
 ---
+
 COPY (
-    SELECT
-        *,
-        year(departure_date) AS year
-    FROM (
-        -- Table 1 (Modern Schema - removals-latest)
-        SELECT
-            departed_date AS departure_date,
-            port_of_departure,
-            departure_country,
-            case_status,
-            case_category,
-            final_order_yes_no,
-            final_order_date,
-            gender,
-            birth_country,
-            citizenship_country,
-            birth_year,
-            entry_status,
-            entry_date,
-            msc_ncic_charge AS msc_charge,
-            msc_charge_date,
-            msc_ncic_charge_code AS msc_charge_code,
-            msc_conviction_date,
-            msc_criminal_charge_status AS msc_charge_status,
-            case_threat_level,
-            processing_disposition,
-            final_program AS current_program,
-            latest_person_apprehension_date AS apprehension_date,
-            final_charge_section_code AS charge_section_code,
-            final_charge_code AS charge_code,
-            unique_identifier AS anonymized_identifier
-        FROM read_parquet('data/raw/removals-latest/*.parquet')
+SELECT
+_,
+year(departure_date) AS year
+FROM (
+-- Table 1 (Modern Schema - removals-latest)
+SELECT
+departed_date AS departure_date,
+port_of_departure,
+departure_country,
+case_status,
+case_category,
+final_order_yes_no,
+final_order_date,
+gender,
+birth_country,
+citizenship_country,
+birth_year,
+entry_status,
+entry_date,
+msc_ncic_charge AS msc_charge,
+msc_charge_date,
+msc_ncic_charge_code AS msc_charge_code,
+msc_conviction_date,
+msc_criminal_charge_status AS msc_charge_status,
+case_threat_level,
+processing_disposition,
+final_program AS current_program,
+latest_person_apprehension_date AS apprehension_date,
+final_charge_section_code AS charge_section_code,
+final_charge_code AS charge_code,
+unique_identifier AS anonymized_identifier
+FROM read_parquet('data/raw/removals-latest/_.parquet')
 
         UNION ALL
 
@@ -97,9 +98,10 @@ COPY (
             anonymized_identifer AS anonymized_identifier
         FROM read_parquet('data/raw/ice-removals-2012-2023/*.parquet')
     ) AS combined_data
+
 )
 TO 'data/raw/bronze' (
-    FORMAT PARQUET,
-    PARTITION_BY (year),
-    OVERWRITE_OR_IGNORE 1
+FORMAT PARQUET,
+PARTITION_BY (year),
+OVERWRITE_OR_IGNORE 1
 );
