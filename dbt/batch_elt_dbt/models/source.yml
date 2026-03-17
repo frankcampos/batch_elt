@@ -1,0 +1,9 @@
+version: 2 
+
+sources:
+  - name: removals
+    description: Data regarding inmigration removals from 2011 to 2025
+    tables:
+      - name: consolidated_removals 
+        meta: 
+          external_location: "/home/migiberto/data_engineering/dagster/batch-elt/data/bronze/*/*.parquet"
