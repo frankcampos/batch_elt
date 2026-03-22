@@ -7,3 +7,9 @@ sources:
       - name: consolidated_removals 
         meta: 
           external_location: "/home/migiberto/data_engineering/dagster/batch-elt/data/bronze/*/*.parquet"
+      - name: silver_dbt
+        meta: 
+          external_location: "/home/migiberto/data_engineering/dagster/batch_elt_dbt/duckdb/my_ducklake.silver_dbt"
+      - name: agregations
+        meta: 
+          external_location: "/home/migiberto/data_engineering/dagster/batch_elt_dbt/duckdb/my_ducklake.agregations"

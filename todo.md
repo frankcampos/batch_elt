@@ -1,6 +1,6 @@
 ### TODO:
 
-- [ ] add dbt, maybe Fusion
+- [ ] add db t, maybe Fusion
 - [ ] add test
 - [ ] add docker container
 - [ ] add types

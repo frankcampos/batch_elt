@@ -1,8 +1,8 @@
 {{config(
-    materialized = 'incremental',
+    materialized = 'table',
     incremental_strategy = 'append',
     on_schema_change= 'sync_all_columns',
     database = 'my_ducklake'
 )}}
-select *  
+select DISTINCT *  
 from {{source('removals','consolidated_removals')}}
