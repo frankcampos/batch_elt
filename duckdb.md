@@ -105,3 +105,11 @@ FORMAT PARQUET,
 PARTITION_BY (year),
 OVERWRITE_OR_IGNORE 1
 );
+
+-- ducklake --
+LOAD ducklake;  
+ ATTACH 'ducklake:/home/migiberto/data_engineering/dagster/batch-elt/duckdb/my_ducklake.ddb' AS my_ducklake;
+SHOW ALL TABLES;
+
+--- ducklake check snapshot --
+SELECT \* FROM \_\_ducklake_metadata_my_ducklake.main.ducklake_snapshot;
