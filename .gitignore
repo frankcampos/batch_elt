@@ -212,5 +212,17 @@ __marimo__/
 .env
 
 # Specific temporary files
- query_result_second.csv
- query_result.csv
+query_result_second.csv
+query_result.csv
+
+# Duckdb binary database files.
+duckdb
+
+# dbt's local user state
+local
+
+# only raw downloaded data 
+data
+
+# ignore .user.yml 
+.user.yml

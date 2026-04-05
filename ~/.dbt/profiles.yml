@@ -7,7 +7,11 @@ batch_elt_dbt:
   outputs:
     dev:
       type: duckdb
-      path: ../../duckdb/data.duckdb
+      path: ../../duckdb/data.duckdb 
+      extensions:
+        - ducklake
+      attach:
+        - path: "ducklake:/home/migiberto/data_engineering/dagster/batch-elt/duckdb/my_ducklake.ddb"
       
       # You can add threads if you want to run models in parallel
       # threads: 4
