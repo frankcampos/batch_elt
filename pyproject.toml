@@ -38,6 +38,7 @@ directory_type = "project"
 root_module = "batch_elt"
 registry_modules = [
     "batch_elt.components.*",
+    "batch_elt_components_version.components.*",
 ]
 
 

@@ -1,0 +1,12 @@
+# dg.toml at the workspace root
+directory_type = "workspace"
+
+[workspace]
+[[workspace.projects]]
+path = "batch_elt_components"
+
+[[workspace.projects]]
+path = "./"
+
+[cli]
+suppress_warnings = [ "deprecated_dagster_dg_library_entry_point" ]
