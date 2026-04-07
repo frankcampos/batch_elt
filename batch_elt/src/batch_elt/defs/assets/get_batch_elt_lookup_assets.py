@@ -21,5 +21,5 @@ def get_batch_elt_lookup_assets(specs):
         batch_elt_lookup_assets.append(parquet_asset)
     return batch_elt_lookup_assets + [partitioned_removals_asset]
 
-batch_elt_assets = get_batch_elt_lookup_assets(get_specs("src/batch_elt/defs/specs"))
+batch_elt_assets = get_batch_elt_lookup_assets(get_specs("batch_elt/src/batch_elt/defs/specs"))
 
