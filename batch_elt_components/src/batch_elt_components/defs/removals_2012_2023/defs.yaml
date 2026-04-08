@@ -1,0 +1,6 @@
+type: batch_elt_components.components.download_file.DownloadFile
+
+attributes: 
+  url: https://github.com/deportationdata/ice/raw/main/data/ice-removals-2012-2023.xlsx
+  file_name: ice-removals-2012-2023.xlsx
+  destination_path: data/raw/

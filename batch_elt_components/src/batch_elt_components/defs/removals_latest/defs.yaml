@@ -1,0 +1,6 @@
+type: batch_elt_components.components.download_file.DownloadFile
+
+attributes: 
+  url: https://github.com/deportationdata/ice/raw/main/data/removals-latest.xlsx
+  file_name: removals-latest.xlsx
+  destination_path: data/raw/
