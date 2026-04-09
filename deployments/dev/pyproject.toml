@@ -9,6 +9,6 @@ dependencies = [
 ]
 
 [tool.dg]
-directory_type = "deployment"
+directory_type = "workspace"
 
 
