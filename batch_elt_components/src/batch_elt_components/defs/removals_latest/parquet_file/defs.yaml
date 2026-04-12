@@ -1,0 +1,5 @@
+type: batch_elt_components.components.parquet_file.ParquetFile
+
+attributes: 
+  file_path: data/raw/
+  file_name: removals-latest.xlsx

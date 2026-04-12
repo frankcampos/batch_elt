@@ -19,7 +19,8 @@ class DownloadFile(dg.Component, dg.Model, dg.Resolvable):
         name = self.file_name.split('.')[0]
         @dg.asset(
               name = f"download_{name}",
-              group_name="bronze"  
+              key_prefix=["bronze_components"],
+              group_name="bronze_components"  
         ) 
         def _asset():
             response = requests.get(self.url , stream=True)

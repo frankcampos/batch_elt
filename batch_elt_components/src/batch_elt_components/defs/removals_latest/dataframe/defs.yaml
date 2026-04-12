@@ -1,0 +1,4 @@
+type: batch_elt_components.components.data_frame.DataFrame
+
+attributes: 
+  file_name: removals-latest.xlsx
