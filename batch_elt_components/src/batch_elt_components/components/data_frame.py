@@ -21,6 +21,7 @@ class DataFrame(dg.Component, dg.Model, dg.Resolvable):
         @asset(
             name = f'dataframe_{name}',
             group_name= "bronze_components",
+            key_prefix=["bronze_components"],
             ins = {"DownloadFile": AssetIn(key=dg.AssetKey(["bronze_components", f'download_{raw_name}']))}
         )
         def _asset(DownloadFile:str):
