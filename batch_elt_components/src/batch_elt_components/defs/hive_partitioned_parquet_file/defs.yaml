@@ -1,0 +1,4 @@
+type: batch_elt_components.components.hive_partitioned_parquet_file.HivePartitionedParquetFile
+
+attributes: 
+  output_path: "data/bronze/removals"
