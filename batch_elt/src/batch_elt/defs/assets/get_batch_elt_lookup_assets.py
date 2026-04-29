@@ -6,6 +6,7 @@ from batch_elt.defs.assets.parquet_file import create_parquet_file_asset
 from batch_elt.defs.assets.hive_partitioned_parquet_file import create_partitioned_removals_asset
 from dagster import get_dagster_logger
 from batch_elt.utils.get_specs import get_specs
+from pathlib import Path
 
 logger = get_dagster_logger()
 
@@ -21,5 +22,5 @@ def get_batch_elt_lookup_assets(specs):
         batch_elt_lookup_assets.append(parquet_asset)
     return batch_elt_lookup_assets + [partitioned_removals_asset]
 
-batch_elt_assets = get_batch_elt_lookup_assets(get_specs("batch_elt/src/batch_elt/defs/specs"))
+batch_elt_assets = get_batch_elt_lookup_assets(get_specs(Path(__file__).parent.parent))
 

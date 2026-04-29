@@ -23,9 +23,12 @@ class DownloadFile(dg.Component, dg.Model, dg.Resolvable):
               group_name="bronze_components"  
         ) 
         def _asset():
+            destination = self.destination_path + self.file_name
+            if os.path.exists(destination):
+                return destination
             response = requests.get(self.url , stream=True)
             if response.status_code == 200:
-                destination = self.destination_path + self.file_name
+                # destination = self.destination_path + self.file_name
                 os.makedirs(self.destination_path, exist_ok=True)
                 with open(destination, 'wb') as f: 
                     for chunck in response.iter_content(chunk_size=8192):

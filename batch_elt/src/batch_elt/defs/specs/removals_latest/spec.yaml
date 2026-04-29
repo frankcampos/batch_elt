@@ -1,5 +1,5 @@
 source:
   file_name: removals-latest.xlsx
-  url: https://github.com/deportationdata/ice/raw/main/data/removals-latest.xlsx
+  url: https://ucla.box.com/shared/static/hrofkgyefmmvki95f487rpk1wigcefd5.xlsx
 destination:
   file_path: data/raw/
