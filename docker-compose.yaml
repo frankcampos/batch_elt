@@ -1,0 +1,82 @@
+services:
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: frank
+      POSTGRES_PASSWORD: migiberto
+      POSTGRES_DB: dagster_postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U frank  -d dagster_postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dagster_network
+
+  batch_elt:
+    build:
+      context: .
+      dockerfile: batch_elt/Dockerfile
+    image: batch_elt_image
+    environment:
+      DAGSTER_CURRENT_IMAGE: "batch_elt_image"
+    expose:
+      - "4000"
+    networks:
+      - dagster_network
+    depends_on:
+      - postgres
+    volumes:
+      - ./batch_elt/data:/opt/dagster/app/data
+      - ./duckdb:/opt/dagster/app/duckdb
+
+  batch_elt_components:
+    build:
+      context: .
+      dockerfile: batch_elt_components/Dockerfile
+    image: batch_elt_components_image
+    environment:
+      DAGSTER_CURRENT_IMAGE: "batch_elt_components_image"
+    expose:
+      - "4000"
+    networks:
+      - dagster_network
+    depends_on:
+      - postgres
+    volumes:
+      - ./batch_elt_components/data:/opt/dagster/app/data
+      - ./duckdb:/opt/dagster/duckdb
+
+  dagster_webserver:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: dagster-webserver -h 0.0.0.0 -p 3000
+    ports:
+      - "3000:3000"
+    networks:
+      - dagster_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      batch_elt:
+        condition: service_started
+      batch_elt_components:
+        condition: service_started
+  dagster_daemon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: dagster-daemon run
+    networks:
+      - dagster_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      batch_elt:
+        condition: service_started
+      batch_elt_components:
+        condition: service_started
+networks:
+  dagster_network:
+    driver: bridge

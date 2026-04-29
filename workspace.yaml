@@ -1,0 +1,7 @@
+load_from:
+  - grpc_server:
+      host: batch_elt_components
+      port: 4000 
+  - grpc_server:
+      host: batch_elt
+      port: 4000
