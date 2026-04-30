@@ -5,4 +5,4 @@
     database = 'my_ducklake'
 )}}
 select DISTINCT *  
-from {{source('removals','consolidated_removals')}}
+from {{source('bronze_components','partitioned_removals')}}

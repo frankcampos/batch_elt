@@ -2,3 +2,7 @@ type: dagster_dbt.DbtProjectComponent
 
 attributes:
    project: "../../../../../dbt/batch_elt_dbt"
+
+   translation:
+      key: "{% if node.resource_type == 'model' %}batch_elt_components/{{node.name}}{% else %}{{node.source_name}}/{{node.name}}{% endif %}"
+      group_name: "batch_elt_components"

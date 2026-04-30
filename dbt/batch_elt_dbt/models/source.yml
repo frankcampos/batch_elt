@@ -1,15 +1,15 @@
-version: 2 
+version: 2
 
 sources:
-  - name: removals
+  - name: bronze_components
     description: Data regarding inmigration removals from 2011 to 2025
     tables:
-      - name: consolidated_removals 
-        meta: 
-          external_location: "/home/migiberto/data_engineering/dagster/batch-elt/data/bronze/*/*.parquet"
+      - name: partitioned_removals
+        meta:
+          external_location: "/opt/dagster/app/data/bronze/*/*.parquet"
       - name: silver_dbt
-        meta: 
-          external_location: "/home/migiberto/data_engineering/dagster/batch_elt_dbt/duckdb/my_ducklake.silver_dbt"
+        meta:
+          external_location: "/opt/dagster/duckdb/my_ducklake.silver_dbt"
       - name: agregations
-        meta: 
-          external_location: "/home/migiberto/data_engineering/dagster/batch_elt_dbt/duckdb/my_ducklake.agregations"
+        meta:
+          external_location: "/opt/dagster/duckdb/my_ducklake.agregations"
