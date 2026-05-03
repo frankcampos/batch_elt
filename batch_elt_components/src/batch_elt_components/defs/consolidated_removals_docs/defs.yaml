@@ -1,0 +1,6 @@
+type: batch_elt_components.components.open_ai_table_documentation_component.OpenAITableDocumentationComponent
+
+attributes:
+  ai_model: gpt-4o-mini
+  table: consolidated_removals
+  output_dir: docs/data_dictionary
