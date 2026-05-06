@@ -6,7 +6,9 @@ sources:
     tables:
       - name: partitioned_removals
         meta:
-          external_location: "/home/migiberto/data_engineering/dagster/batch-elt/data/bronze/*/*.parquet"
+          # Dagster or Dbt without the container
+          # external_location: "/home/migiberto/data_engineering/dagster/batch-elt/data/bronze/*/*.parquet"
+          external_location: /opt/dagster/app/data/bronze/*/*.parquet
       - name: silver_dbt
         meta:
           external_location: "/opt/dagster/duckdb/my_ducklake.silver_dbt"

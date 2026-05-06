@@ -37,6 +37,7 @@ services:
     image: batch_elt_components_image
     environment:
       DAGSTER_CURRENT_IMAGE: "batch_elt_components_image"
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
     expose:
       - "4000"
     networks:
@@ -46,6 +47,10 @@ services:
     volumes:
       - ./batch_elt_components/data:/opt/dagster/app/data
       - ./duckdb:/opt/dagster/duckdb
+      # only use it  for development
+      - ./batch_elt_components/src:/opt/dagster/app/src
+      # only use it for development
+      - ./dbt:/opt/dagster/dbt
 
   dagster_webserver:
     build:

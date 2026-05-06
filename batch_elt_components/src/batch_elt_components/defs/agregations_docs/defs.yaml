@@ -4,5 +4,5 @@ attributes:
   ai_model: gpt-5.4
   table: agregations
   database: my_ducklake
-  database_path: /home/migiberto/data_engineering/dagster/batch-elt/duckdb/my_ducklake.ddb
+  database_path: /opt/dagster/duckdb/my_ducklake.ddb
   output_dir: docs/data_dictionary
