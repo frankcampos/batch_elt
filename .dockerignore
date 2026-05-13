@@ -1,0 +1,25 @@
+# Virtual environments — NOT portable (absolute paths + host-built binaries).
+# The image must build its own venv from uv.lock via `uv sync`, not inherit the host's.
+**/.venv
+.venv
+
+# Python caches
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/.pytest_cache
+**/.ruff_cache
+**/.mypy_cache
+
+# Editor / tooling / VCS metadata
+.git
+.gitignore
+.idea
+.vscode
+.claude
+
+# OS cruft
+**/.DS_Store
+
+# DuckLake catalog backup (large, not needed in the image)
+duckdb/*.bak-*

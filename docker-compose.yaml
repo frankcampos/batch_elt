@@ -51,6 +51,8 @@ services:
       - ./batch_elt_components/src:/opt/dagster/app/src
       # only use it for development
       - ./dbt:/opt/dagster/dbt
+      # data dictionary host
+      - ./docs/data_dictionary:/opt/dagster/app/docs/data_dictionary
 
   dagster_webserver:
     build:

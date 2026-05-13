@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "duckdb-inspector": {
+      "command": "/home/migiberto/.local/bin/uv",
+      "args": [
+        "run",
+        "--project",
+        "/home/migiberto/data_engineering/dagster/batch-elt/batch_elt_components",
+        "/home/migiberto/data_engineering/dagster/batch-elt/batch_elt_components/my_mcp.py"
+      ]
+    }
+  }
+}
