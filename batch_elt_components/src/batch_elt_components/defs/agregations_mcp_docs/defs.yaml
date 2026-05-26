@@ -1,0 +1,14 @@
+type: batch_elt_components.components.mcp_query_component.MCPQueryComponent
+
+attributes:
+  spec:
+    key: aggregations_data_dictionary
+    group_name: mcp
+    kinds: [python, duckdb]
+    deps:
+      - batch_elt_components/agregations
+  # DESCRIBE returns the schema from catalog metadata (no data files read).
+  sql: "DESCRIBE ducklake.main.agregations"
+  table: agregations
+  ai_model: gpt-5.4
+  output_dir: docs/data_dictionary
