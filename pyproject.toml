@@ -1,0 +1,12 @@
+[project]
+name = "batch-elt"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "dagster>=1.13.6",
+    "dagster-duckdb>=0.29.6",
+    "dagster-openai>=0.29.6",
+    "duckdb>=1.5.3",
+    "fastmcp>=3.3.1",
+    "mcp>=1.27.1",
+]

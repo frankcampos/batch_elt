@@ -66,6 +66,7 @@ class OpenAITableDocumentationComponent(dg.Component, dg.Model, dg.Resolvable):
         def _asset(context: dg.AssetExecutionContext, openai: OpenAIResource, database: DuckDBResource) -> str:
             with database.get_connection() as conn:
                 if self.database and self.database_path:
+                    # ducklake tables
                     conn.execute(f"ATTACH IF NOT EXISTS '{self.database_path}' AS {self.database} (READ_ONLY)")
                     schema = conn.execute(f"""
                         SELECT c.column_name, c.column_type
@@ -77,6 +78,7 @@ class OpenAITableDocumentationComponent(dg.Component, dg.Model, dg.Resolvable):
                         ORDER BY c.column_order
                     """).fetchall()
                 else:
+                    # duckdb tables
                     schema = conn.execute(f"DESCRIBE {self.table}").fetchall()
 
             schema_text = "\n".join(f"{col[0]} ({col[1]})" for col in schema)
