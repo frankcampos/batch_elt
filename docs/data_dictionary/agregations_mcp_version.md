@@ -1,9 +1,9 @@
 # Table: agregations
 **Type:** aggregate
-**Description:** Aggregated person-level summary table containing anonymized demographic attributes, charge information, and rolled-up immigration enforcement and removal metrics. Each row represents one anonymized individual with counts and date ranges derived from underlying event-level records.
+**Description:** Aggregated person-level summary table containing anonymized demographic attributes, enforcement context, and rolled-up counts and dates related to removal events, voluntary returns, and order reinstatements.
 **Primary Key:** anonymized_identifier
-**Grain:** One row per anonymized individual identifier.
-**Source System:** Derived/aggregated from underlying immigration enforcement and removal event source data.
+**Grain:** One row per anonymized individual identifier and associated attribute combination in the aggregated source.
+**Source System:** Unknown; likely derived from immigration/enforcement event source data.
 
 ## Columns
 ### anonymized_identifier
@@ -12,35 +12,35 @@
 - **Nullable:** True
 - **PII:** False
 - **Used for aggregations:** False
-- **Example values:** a1f9c23e, anon_10452, 7d88b1aa
-- **Gotchas:** Expected to be unique at this table's grain. Although anonymized, treat as sensitive quasi-identifier because it links all subject-level metrics.
+- **Example values:** a1f9c23d, anon_104582, 7b8e19ff
+- **Gotchas:** Although anonymized, this acts like a person key and may still be considered sensitive in some contexts. Confirm whether each identifier appears only once in this table.
 
 ### gender
 - **Type:** VARCHAR
-- **Description:** Reported gender associated with the anonymized individual.
+- **Description:** Reported or inferred gender associated with the individual.
 - **Nullable:** True
-- **PII:** True
+- **PII:** False
 - **Used for aggregations:** True
 - **Example values:** Male, Female, Unknown
-- **Gotchas:** May be null, unknown, inconsistent across source records, or reflect source-system coding rather than self-identification.
+- **Gotchas:** May contain nulls, unknown values, inconsistent coding, or values that change over time if sourced from multiple systems.
 
 ### birth_year
 - **Type:** DOUBLE
-- **Description:** Year of birth for the individual, stored as a numeric value.
+- **Description:** Year of birth for the individual.
 - **Nullable:** True
 - **PII:** True
 - **Used for aggregations:** True
 - **Example values:** 1984, 1997, 1972
-- **Gotchas:** Stored as DOUBLE instead of integer, so downstream models may need casting. Nulls and implausible years should be validated before analysis.
+- **Gotchas:** Stored as DOUBLE rather than integer, so decimal artifacts may appear. Birth year can be sensitive quasi-identifying information.
 
 ### birth_country
 - **Type:** VARCHAR
-- **Description:** Country of birth associated with the individual.
+- **Description:** Country where the individual was born.
 - **Nullable:** True
 - **PII:** True
 - **Used for aggregations:** True
 - **Example values:** Mexico, Guatemala, El Salvador
-- **Gotchas:** Country values may have inconsistent spelling, abbreviations, or historical naming depending on source standardization.
+- **Gotchas:** Country names may not be standardized and may differ from citizenship_country.
 
 ### citizenship_country
 - **Type:** VARCHAR
@@ -49,16 +49,16 @@
 - **PII:** True
 - **Used for aggregations:** True
 - **Example values:** Mexico, Honduras, India
-- **Gotchas:** May differ from birth_country. Nulls, multiple citizenship cases, or source recoding may affect interpretation.
+- **Gotchas:** Can differ from birth_country and may change over time depending on source data timing.
 
 ### criminal_charge
 - **Type:** VARCHAR
-- **Description:** Primary or associated criminal charge category linked to the individual in source records.
+- **Description:** Criminal charge category or description associated with the individual's record.
 - **Nullable:** True
 - **PII:** True
 - **Used for aggregations:** True
 - **Example values:** DUI, Drug Possession, Assault
-- **Gotchas:** Charge definitions may vary by jurisdiction and source record. An aggregate table may not preserve all historical charges if multiple exist.
+- **Gotchas:** May be free text or inconsistently categorized. A person may have multiple charges over time, so this field may not represent a complete history.
 
 ### criminal_charge_status
 - **Type:** VARCHAR
@@ -67,16 +67,16 @@
 - **PII:** True
 - **Used for aggregations:** True
 - **Example values:** Pending, Convicted, Dismissed
-- **Gotchas:** Status may change over time, and this aggregate may only reflect one status rather than a full charge lifecycle.
+- **Gotchas:** Status definitions may vary by jurisdiction or source. If multiple charges exist, status may reflect only one charge or a non-deterministic aggregation choice.
 
 ### total_removal_events
 - **Type:** BIGINT
-- **Description:** Total count of removal events recorded for the individual.
+- **Description:** Total number of removal events recorded for the individual.
 - **Nullable:** True
 - **PII:** False
 - **Used for aggregations:** True
 - **Example values:** 0, 1, 4
-- **Gotchas:** Definition of a removal event depends on source logic. Verify whether repeated administrative updates are excluded from the count.
+- **Gotchas:** Null may mean unknown rather than zero. Confirm whether repeated events on the same date are counted separately.
 
 ### earliest_removal_date
 - **Type:** TIMESTAMP
@@ -84,8 +84,8 @@
 - **Nullable:** True
 - **PII:** False
 - **Used for aggregations:** True
-- **Example values:** 2012-03-14 00:00:00, 2018-11-02 13:45:00, 2020-01-09 09:30:00
-- **Gotchas:** Null when no removal exists. Time component may be artificial or source-dependent; many analyses should truncate to date.
+- **Example values:** 2012-03-14 00:00:00, 2018-09-01 13:45:00
+- **Gotchas:** May include time components or default midnight timestamps depending on source precision. Time zone handling may not be standardized.
 
 ### most_recent_removal_date
 - **Type:** TIMESTAMP
@@ -93,59 +93,59 @@
 - **Nullable:** True
 - **PII:** False
 - **Used for aggregations:** True
-- **Example values:** 2019-06-21 00:00:00, 2023-08-17 16:20:00, 2021-12-31 23:59:59
-- **Gotchas:** Null when no removal exists. Should be on or after earliest_removal_date; if not, source or transformation issues may exist.
+- **Example values:** 2021-11-20 00:00:00, 2024-01-05 08:30:00
+- **Gotchas:** Should be greater than or equal to earliest_removal_date when both are present; validate for data quality issues.
 
 ### total_years_with_removals
 - **Type:** BIGINT
-- **Description:** Number of distinct calendar years in which the individual had at least one recorded removal.
-- **Nullable:** True
-- **PII:** False
-- **Used for aggregations:** True
-- **Example values:** 0, 1, 3
-- **Gotchas:** This is not necessarily the span between earliest and latest removal dates; it counts distinct years with activity.
-
-### total_distinct_departure_ports
-- **Type:** BIGINT
-- **Description:** Count of distinct departure ports associated with the individual's recorded removals or returns.
+- **Description:** Count of distinct calendar years in which the individual had at least one removal event.
 - **Nullable:** True
 - **PII:** False
 - **Used for aggregations:** True
 - **Example values:** 1, 2, 5
-- **Gotchas:** Port names may require normalization upstream; otherwise counts can be inflated by spelling or coding differences.
+- **Gotchas:** This is distinct years with activity, not elapsed years between first and last event.
 
-### total_distinct_enforcement_programs
+### total_distinct_departure_ports
 - **Type:** BIGINT
-- **Description:** Count of distinct enforcement programs linked to the individual's records.
+- **Description:** Number of distinct departure ports associated with the individual's removal events.
 - **Nullable:** True
 - **PII:** False
 - **Used for aggregations:** True
-- **Example values:** 1, 3, 6
-- **Gotchas:** Program definitions may change over time, so distinct counts can reflect historical coding changes rather than meaningful program diversity.
+- **Example values:** 1, 3, 7
+- **Gotchas:** Distinct counts depend on port standardization; duplicated or differently coded ports can inflate counts.
+
+### total_distinct_enforcement_programs
+- **Type:** BIGINT
+- **Description:** Number of distinct enforcement programs linked to the individual's events.
+- **Nullable:** True
+- **PII:** False
+- **Used for aggregations:** True
+- **Example values:** 1, 2, 4
+- **Gotchas:** Program naming or code normalization materially affects distinct counts.
 
 ### estimated_current_age
 - **Type:** DOUBLE
-- **Description:** Estimated current age of the individual, likely derived from birth_year and the current or reference year.
+- **Description:** Estimated current age derived from birth year and a reference date.
 - **Nullable:** True
 - **PII:** True
 - **Used for aggregations:** True
 - **Example values:** 27, 41, 63
-- **Gotchas:** Stored as DOUBLE and likely time-relative, so values can change as of run date. Prefer recalculating from birth_year and a fixed reference date for reproducibility.
+- **Gotchas:** Stored as DOUBLE and likely derived, so values may be approximate and can become stale over time depending on refresh cadence.
 
 ### total_voluntary_returns
 - **Type:** BIGINT
-- **Description:** Total count of voluntary return events recorded for the individual.
+- **Description:** Total number of voluntary return events recorded for the individual.
 - **Nullable:** True
 - **PII:** False
 - **Used for aggregations:** True
-- **Example values:** 0, 2, 7
-- **Gotchas:** Business rules for what qualifies as a voluntary return should be validated against source definitions.
+- **Example values:** 0, 1, 6
+- **Gotchas:** Definition of voluntary return may differ from removal event definitions; null may not equal zero.
 
 ### total_order_reinstatements
 - **Type:** BIGINT
-- **Description:** Total count of removal order reinstatement events associated with the individual.
+- **Description:** Total number of times a prior order was reinstated for the individual.
 - **Nullable:** True
 - **PII:** False
 - **Used for aggregations:** True
 - **Example values:** 0, 1, 3
-- **Gotchas:** Ensure analysts distinguish reinstatements from removals; these may be related but not interchangeable event types.
+- **Gotchas:** Business logic for what qualifies as a reinstatement should be validated with source documentation.

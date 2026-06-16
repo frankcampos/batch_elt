@@ -224,5 +224,11 @@ local
 # only raw downloaded data 
 data
 
-# ignore .user.yml 
+# ignore .user.yml
 .user.yml
+
+# JetBrains IDE config (machine-specific; may hold local DB credentials)
+.idea/
+
+# Claude Code local settings (personal machine config)
+.claude/settings.local.json
