@@ -47,6 +47,9 @@ services:
     volumes:
       - ./batch_elt_components/data:/opt/dagster/app/data
       - ./duckdb:/opt/dagster/duckdb
+      # DuckLake catalog now stores a RELATIVE data_path
+      # (../../duckdb/my_ducklake.ddb.files/), resolved from dbt's working dir.
+      # The single ./duckdb mount above is enough — no host-specific path needed.
       # only use it  for development
       - ./batch_elt_components/src:/opt/dagster/app/src
       # only use it for development
@@ -84,6 +87,34 @@ services:
         condition: service_started
       batch_elt_components:
         condition: service_started
+#add metabase image here
+  metabase:
+    build:
+      context: .
+      dockerfile: metabase.dockerfile.yaml
+    container_name: metabase_duckdb
+    ports:
+      - "8080:3000"
+    volumes:
+      # Persist Metabase's own app DB (H2). Must match MB_DB_FILE's parent
+      # directory set in metabase.dockerfile.yaml (/home/metabase/data).
+      - metabase_data:/home/metabase/data
+      # Expose your DuckDB files to Metabase. Inside the container they live
+      # at /opt/dagster/duckdb, so connect using e.g.
+      #   /opt/dagster/duckdb/data.duckdb
+      - ./duckdb:/opt/dagster/duckdb
+    # NOTE: MB_PLUGINS_DIR and MB_DB_FILE are now set inside the Dockerfile,
+    # so we no longer override them here.
+    restart: unless-stopped
+
 networks:
   dagster_network:
     driver: bridge
+
+volumes:
+  metabase_data:
+
+
+
+
+
