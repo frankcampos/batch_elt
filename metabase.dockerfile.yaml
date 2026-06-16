@@ -1,0 +1,55 @@
+# =============================================================================
+# Metabase + DuckDB driver  —  built on a DEBIAN (glibc) base
+#
+# WHY WE NO LONGER EXTEND metabase/metabase:latest:
+#   The official Metabase image is Alpine Linux, which uses "musl" libc.
+#   The DuckDB driver ships a native (.so) library compiled against "glibc".
+#   On musl it fails to resolve glibc-only symbols (backtrace, __res_init,
+#   __register_atfork, ...) -> the connection silently fails.
+#   The driver maintainers' fix: build Metabase yourself on a Debian/glibc
+#   base. That is exactly what this file does.
+# =============================================================================
+
+# Debian "Jammy" image that already contains a Java 21 runtime (glibc-based).
+FROM eclipse-temurin:21-jre-jammy
+
+# Where Metabase looks for community driver plugins (our DuckDB jar lands here).
+ENV MB_PLUGINS_DIR=/home/metabase/plugins/
+
+# Where Metabase stores its OWN app data (H2: dashboards, users, settings).
+# docker-compose mounts a named volume at /home/metabase/data so this persists.
+ENV MB_DB_FILE=/home/metabase/data/metabase.db
+
+# CA certificates are needed so HTTPS works (downloads + SSL DB connections).
+# NOTE: Debian uses apt-get, not Alpine's apk.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create a dedicated non-root user to run Metabase (safer than running as root).
+RUN groupadd -r metabase && useradd -r -g metabase -d /home/metabase metabase
+
+# Create the plugins + data folders and give them to the metabase user.
+RUN mkdir -p /home/metabase/plugins /home/metabase/data \
+    && chown -R metabase:metabase /home/metabase
+
+# 1) Download Metabase itself. v0.59.12 == "Metabase 59", which matches the
+#    DuckDB driver build below (driver release: "Metabase 59 + DuckDB 1.5.3").
+ADD https://downloads.metabase.com/v0.59.12/metabase.jar /home/metabase/metabase.jar
+
+# 2) Download the community DuckDB driver plugin into the plugins folder.
+ADD https://github.com/motherduckdb/metabase_duckdb_driver/releases/download/1.5.3.0/duckdb.metabase-driver.jar /home/metabase/plugins/duckdb.metabase-driver.jar
+
+# Fix ownership of the two downloaded jars (ADD writes them as root).
+RUN chown metabase:metabase \
+        /home/metabase/metabase.jar \
+        /home/metabase/plugins/duckdb.metabase-driver.jar
+
+# Drop root: everything from here runs as the unprivileged metabase user.
+USER metabase
+
+# Metabase listens on port 3000 inside the container.
+EXPOSE 3000
+
+# Start Metabase.
+CMD ["java", "-jar", "/home/metabase/metabase.jar"]
